@@ -1,0 +1,282 @@
+:root {
+  --cor-receita: #1a9c6b;
+  --cor-despesa: #d9455f;
+  --cor-saldo: #2d6ae0;
+  --cor-fundo: #f4f6fb;
+  --cor-card: #ffffff;
+  --cor-texto: #232734;
+  --cor-texto-suave: #6b7280;
+  --borda: #e5e7eb;
+  --sombra: 0 2px 10px rgba(20, 20, 40, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+.topbar {
+  background: linear-gradient(120deg, #1f2a44, #2d3f6b);
+  color: #fff;
+  padding: 28px 24px;
+  text-align: center;
+}
+.topbar h1 {
+  margin: 0 0 4px 0;
+  font-size: 1.6rem;
+}
+.subtitle {
+  margin: 0;
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 60px;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.card {
+  background: var(--cor-card);
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: var(--sombra);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 4px solid var(--borda);
+}
+.card-label {
+  font-size: 0.85rem;
+  color: var(--cor-texto-suave);
+}
+.card-valor {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.card-receita {
+  border-top-color: var(--cor-receita);
+}
+.card-receita .card-valor {
+  color: var(--cor-receita);
+}
+.card-despesa {
+  border-top-color: var(--cor-despesa);
+}
+.card-despesa .card-valor {
+  color: var(--cor-despesa);
+}
+.card-saldo {
+  border-top-color: var(--cor-saldo);
+}
+.card-saldo .card-valor {
+  color: var(--cor-saldo);
+}
+.card-registros {
+  border-top-color: #9b59b6;
+}
+
+.grafico-section {
+  background: var(--cor-card);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--sombra);
+  margin-bottom: 28px;
+}
+.grafico-section h2,
+.form-section h2,
+.lista-section h2 {
+  margin-top: 0;
+  font-size: 1.1rem;
+}
+.grafico-barras {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+.barra-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+}
+.barra-label {
+  width: 160px;
+  flex-shrink: 0;
+  color: var(--cor-texto-suave);
+}
+.barra-fundo {
+  flex: 1;
+  background: #eef0f5;
+  border-radius: 6px;
+  height: 18px;
+  overflow: hidden;
+}
+.barra-preenchida {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.4s ease;
+}
+.barra-valor {
+  width: 100px;
+  text-align: right;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+.grid-form-lista {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 20px;
+}
+@media (max-width: 800px) {
+  .grid-form-lista {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-section,
+.lista-section {
+  background: var(--cor-card);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--sombra);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+label {
+  font-size: 0.8rem;
+  color: var(--cor-texto-suave);
+  margin-top: 10px;
+}
+input,
+select {
+  padding: 9px 10px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+input:focus,
+select:focus {
+  outline: 2px solid var(--cor-saldo);
+  border-color: transparent;
+}
+
+button[type="submit"] {
+  margin-top: 18px;
+  background: var(--cor-saldo);
+  color: #fff;
+  border: none;
+  padding: 11px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+button[type="submit"]:hover {
+  background: #1f52b8;
+}
+
+.mensagem-erro {
+  color: var(--cor-despesa);
+  font-size: 0.85rem;
+  min-height: 18px;
+  margin: 8px 0 0 0;
+}
+
+/* TABELA */
+.tabela-wrapper {
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+th,
+td {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--borda);
+  white-space: nowrap;
+}
+th {
+  color: var(--cor-texto-suave);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+tr:hover td {
+  background: #fafbff;
+}
+
+.tag {
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.tag-receita {
+  background: #e3f7ee;
+  color: var(--cor-receita);
+}
+.tag-despesa {
+  background: #fbe6ea;
+  color: var(--cor-despesa);
+}
+
+.valor-receita {
+  color: var(--cor-receita);
+  font-weight: 600;
+}
+.valor-despesa {
+  color: var(--cor-despesa);
+  font-weight: 600;
+}
+
+.btn-excluir {
+  background: #fff0f1;
+  color: var(--cor-despesa);
+  border: 1px solid #f6c9ce;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.btn-excluir:hover {
+  background: var(--cor-despesa);
+  color: #fff;
+}
+
+.lista-vazia {
+  text-align: center;
+  color: var(--cor-texto-suave);
+  padding: 24px 0;
+}
+
+footer {
+  text-align: center;
+  color: var(--cor-texto-suave);
+  font-size: 0.8rem;
+  padding: 20px;
+}

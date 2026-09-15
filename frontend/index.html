@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Registro Financeiro</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>💰 Sistema de Registro Financeiro</h1>
+    </header>
+
+    <main class="container">
+      <section class="dashboard">
+        <div class="card card-receita">
+          <span class="card-label">Total de Receitas</span>
+          <span class="card-valor" id="totalReceitas">R$ 0,00</span>
+        </div>
+        <div class="card card-despesa">
+          <span class="card-label">Total de Despesas</span>
+          <span class="card-valor" id="totalDespesas">R$ 0,00</span>
+        </div>
+        <div class="card card-saldo">
+          <span class="card-label">Saldo</span>
+          <span class="card-valor" id="saldo">R$ 0,00</span>
+        </div>
+        <div class="card card-registros">
+          <span class="card-label">Registros</span>
+          <span class="card-valor" id="totalRegistros">0</span>
+        </div>
+      </section>
+
+      <section class="grafico-section">
+        <h2>Gastos e receitas por categoria</h2>
+        <div id="graficoCategorias" class="grafico-barras"></div>
+      </section>
+
+      <div class="grid-form-lista">
+        <section class="form-section">
+          <h2>Novo registro</h2>
+          <form id="formRegistro">
+            <label for="descricao">Descrição</label>
+            <input
+              type="text"
+              id="descricao"
+              placeholder="Ex: Salário, Aluguel, Mercado..."
+              required
+            />
+
+            <label for="valor">Valor (R$)</label>
+            <input
+              type="number"
+              id="valor"
+              step="0.01"
+              min="0.01"
+              placeholder="0,00"
+              required
+            />
+
+            <label for="tipo">Tipo</label>
+            <select id="tipo" required>
+              <option value="receita">Receita</option>
+              <option value="despesa">Despesa</option>
+            </select>
+
+            <label for="categoria">Categoria</label>
+            <input
+              type="text"
+              id="categoria"
+              placeholder="Ex: Salário, Alimentação, Transporte..."
+              required
+            />
+
+            <label for="data">Data</label>
+            <input type="date" id="data" required />
+
+            <button type="submit">Adicionar registro</button>
+            <p id="mensagemErro" class="mensagem-erro"></p>
+          </form>
+        </section>
+
+        <section class="lista-section">
+          <h2>Registros lançados</h2>
+          <div class="tabela-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Descrição</th>
+                  <th>Categoria</th>
+                  <th>Tipo</th>
+                  <th>Valor</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="corpoTabela"></tbody>
+            </table>
+            <p id="listaVazia" class="lista-vazia" style="display: none">
+              Nenhum registro cadastrado ainda.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <p>
+        Sistema desenvolvido para fins acadêmicos • Node.js + Express + SQLite
+      </p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
