@@ -65,26 +65,30 @@ app.get("/api/resumo", (req, res) => {
   }
 });
 
+// Retorna uma mensagem de erro, ou null se os dados forem válidos
+function validarRegistro({ descricao, valor, tipo, categoria, data }) {
+  if (!descricao || !valor || !tipo || !categoria || !data) {
+    return "Todos os campos são obrigatórios.";
+  }
+  if (!["receita", "despesa"].includes(tipo)) {
+    return "O campo 'tipo' deve ser 'receita' ou 'despesa'.";
+  }
+  const valorNum = Number(valor);
+  if (isNaN(valorNum) || valorNum <= 0) {
+    return "O valor deve ser um número maior que zero.";
+  }
+  return null;
+}
+
 app.post("/api/registros", (req, res) => {
   try {
     const { descricao, valor, tipo, categoria, data } = req.body;
 
-    if (!descricao || !valor || !tipo || !categoria || !data) {
-      return res
-        .status(400)
-        .json({ erro: "Todos os campos são obrigatórios." });
-    }
-    if (!["receita", "despesa"].includes(tipo)) {
-      return res
-        .status(400)
-        .json({ erro: "O campo 'tipo' deve ser 'receita' ou 'despesa'." });
+    const erro = validarRegistro(req.body);
+    if (erro) {
+      return res.status(400).json({ erro });
     }
     const valorNum = Number(valor);
-    if (isNaN(valorNum) || valorNum <= 0) {
-      return res
-        .status(400)
-        .json({ erro: "O valor deve ser um número maior que zero." });
-    }
 
     const stmt = db.prepare(
       `INSERT INTO registros (descricao, valor, tipo, categoria, data)
@@ -106,6 +110,40 @@ app.post("/api/registros", (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ erro: "Erro ao criar registro." });
+  }
+});
+
+app.put("/api/registros/:id", (req, res) => {
+  try {
+    const { id } = req.params;
+    const { descricao, valor, tipo, categoria, data } = req.body;
+
+    const existente = db
+      .prepare("SELECT * FROM registros WHERE id = ?")
+      .get(id);
+    if (!existente) {
+      return res.status(404).json({ erro: "Registro não encontrado." });
+    }
+
+    const erro = validarRegistro(req.body);
+    if (erro) {
+      return res.status(400).json({ erro });
+    }
+
+    db.prepare(
+      `UPDATE registros
+       SET descricao = ?, valor = ?, tipo = ?, categoria = ?, data = ?
+       WHERE id = ?`,
+    ).run(descricao.trim(), Number(valor), tipo, categoria.trim(), data, id);
+
+    const atualizado = db
+      .prepare("SELECT * FROM registros WHERE id = ?")
+      .get(id);
+
+    res.json(atualizado);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao atualizar registro." });
   }
 });
 

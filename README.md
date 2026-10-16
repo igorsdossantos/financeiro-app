@@ -13,6 +13,7 @@ Trabalho de faculdade — sistema completo (frontend + backend + banco de dados)
 - Dashboard com total de receitas, despesas, saldo e quantidade de registros
 - Gráfico de barras simples por categoria
 - Cadastro de novos registros (descrição, valor, tipo, categoria, data)
+- Edição de registros
 - Exclusão de registros
 - Validações no backend (campos obrigatórios, tipo válido, valor positivo)
 

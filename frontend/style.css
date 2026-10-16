@@ -197,6 +197,20 @@ button[type="submit"]:hover {
   background: #1f52b8;
 }
 
+.btn-cancelar {
+  margin-top: 8px;
+  background: transparent;
+  color: var(--cor-texto-suave);
+  border: 1px solid var(--borda);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.btn-cancelar:hover {
+  background: var(--cor-fundo);
+}
+
 .mensagem-erro {
   color: var(--cor-despesa);
   font-size: 0.85rem;
@@ -252,6 +266,25 @@ tr:hover td {
 .valor-despesa {
   color: var(--cor-despesa);
   font-weight: 600;
+}
+
+.btn-editar {
+  background: #eef3fd;
+  color: var(--cor-saldo);
+  border: 1px solid #c9d8f6;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  margin-right: 6px;
+}
+.btn-editar:hover {
+  background: var(--cor-saldo);
+  color: #fff;
+}
+
+tr.em-edicao td {
+  background: #eef3fd;
 }
 
 .btn-excluir {

@@ -5,6 +5,12 @@ const corpoTabela = document.getElementById("corpoTabela");
 const listaVazia = document.getElementById("listaVazia");
 const mensagemErro = document.getElementById("mensagemErro");
 const graficoCategorias = document.getElementById("graficoCategorias");
+const tituloForm = document.getElementById("tituloForm");
+const btnSalvar = document.getElementById("btnSalvar");
+const btnCancelarEdicao = document.getElementById("btnCancelarEdicao");
+
+let registrosAtuais = [];
+let idEmEdicao = null; // null = cadastrando um novo registro
 
 const cores = [
   "#2d6ae0",
@@ -54,6 +60,7 @@ async function carregarResumo() {
 }
 
 function renderizarTabela(registros) {
+  registrosAtuais = registros;
   corpoTabela.innerHTML = "";
 
   if (registros.length === 0) {
@@ -65,15 +72,23 @@ function renderizarTabela(registros) {
 
   registros.forEach((registro) => {
     const tr = document.createElement("tr");
+    if (registro.id === idEmEdicao) tr.classList.add("em-edicao");
     tr.innerHTML = `
       <td>${formatarData(registro.data)}</td>
       <td>${escapeHTML(registro.descricao)}</td>
       <td>${escapeHTML(registro.categoria)}</td>
       <td><span class="tag tag-${registro.tipo}">${registro.tipo === "receita" ? "Receita" : "Despesa"}</span></td>
       <td class="valor-${registro.tipo}">${registro.tipo === "despesa" ? "- " : "+ "}${formatarMoeda(registro.valor)}</td>
-      <td><button class="btn-excluir" data-id="${registro.id}">Excluir</button></td>
+      <td>
+        <button class="btn-editar" data-id="${registro.id}">Editar</button>
+        <button class="btn-excluir" data-id="${registro.id}">Excluir</button>
+      </td>
     `;
     corpoTabela.appendChild(tr);
+  });
+
+  document.querySelectorAll(".btn-editar").forEach((btn) => {
+    btn.addEventListener("click", () => entrarModoEdicao(Number(btn.dataset.id)));
   });
 
   document.querySelectorAll(".btn-excluir").forEach((btn) => {
@@ -135,11 +150,47 @@ function escapeHTML(str) {
 
 // ---------- AÇÕES ----------
 
+function entrarModoEdicao(id) {
+  const registro = registrosAtuais.find((r) => r.id === id);
+  if (!registro) return;
+
+  idEmEdicao = id;
+  document.getElementById("descricao").value = registro.descricao;
+  document.getElementById("valor").value = registro.valor;
+  document.getElementById("tipo").value = registro.tipo;
+  document.getElementById("categoria").value = registro.categoria;
+  document.getElementById("data").value = registro.data;
+
+  tituloForm.textContent = "Editar registro";
+  btnSalvar.textContent = "Salvar alterações";
+  btnCancelarEdicao.style.display = "block";
+  mensagemErro.textContent = "";
+
+  renderizarTabela(registrosAtuais);
+  form.scrollIntoView({ behavior: "smooth" });
+  document.getElementById("descricao").focus();
+}
+
+function sairModoEdicao() {
+  idEmEdicao = null;
+  form.reset();
+  document.getElementById("data").valueAsDate = new Date();
+
+  tituloForm.textContent = "Novo registro";
+  btnSalvar.textContent = "Adicionar registro";
+  btnCancelarEdicao.style.display = "none";
+  mensagemErro.textContent = "";
+
+  renderizarTabela(registrosAtuais);
+}
+
+btnCancelarEdicao.addEventListener("click", sairModoEdicao);
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   mensagemErro.textContent = "";
 
-  const novoRegistro = {
+  const registro = {
     descricao: document.getElementById("descricao").value.trim(),
     valor: document.getElementById("valor").value,
     tipo: document.getElementById("tipo").value,
@@ -147,22 +198,28 @@ form.addEventListener("submit", async (e) => {
     data: document.getElementById("data").value,
   };
 
+  const editando = idEmEdicao !== null;
+
   try {
-    const resp = await fetch(`${API_URL}/registros`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(novoRegistro),
-    });
+    const resp = await fetch(
+      editando ? `${API_URL}/registros/${idEmEdicao}` : `${API_URL}/registros`,
+      {
+        method: editando ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(registro),
+      },
+    );
 
     const dados = await resp.json();
 
     if (!resp.ok) {
-      mensagemErro.textContent = dados.erro || "Erro ao cadastrar registro.";
+      mensagemErro.textContent =
+        dados.erro ||
+        (editando ? "Erro ao salvar alterações." : "Erro ao cadastrar registro.");
       return;
     }
 
-    form.reset();
-    document.getElementById("data").valueAsDate = new Date();
+    sairModoEdicao();
     await carregarTudo();
   } catch (err) {
     console.error(err);
@@ -182,6 +239,7 @@ async function excluirRegistro(id) {
       alert(dados.erro || "Erro ao excluir registro.");
       return;
     }
+    if (Number(id) === idEmEdicao) sairModoEdicao();
     await carregarTudo();
   } catch (err) {
     console.error(err);
